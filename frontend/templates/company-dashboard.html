@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FarmRent – Company Dashboard</title>
+  <link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo"><span>🌾</span> FarmRent</a>
+  <div class="nav-user" id="nav-user"></div>
+</nav>
+
+<div class="dashboard">
+  <nav class="sidebar">
+    <div style="padding:1.5rem;border-bottom:1px solid rgba(255,255,255,0.1);margin-bottom:0.5rem">
+      <div style="color:white;font-weight:700;font-size:0.95rem" id="sidebar-name">Company Dashboard</div>
+      <div style="color:rgba(255,255,255,0.5);font-size:0.78rem;margin-top:0.2rem">Rental Company</div>
+    </div>
+    <div class="sidebar-section">Navigation</div>
+    <a href="#" class="active" onclick="showSection('overview', this)"><span>🏠</span> Overview</a>
+    <a href="#" onclick="showSection('listings', this)"><span>🚜</span> My Equipment</a>
+    <a href="#" onclick="showSection('requests', this)"><span>📬</span> Rental Requests</a>
+    <div class="sidebar-section">Account</div>
+    <a href="#" onclick="showSection('profile', this)"><span>🏢</span> Business Profile</a>
+    <a href="#" onclick="logout()"><span>🚪</span> Logout</a>
+  </nav>
+
+  <main class="main-content">
+
+    <!-- OVERVIEW -->
+    <section id="section-overview">
+      <div class="page-header">
+        <h1 class="page-title" id="overview-title">Company Dashboard</h1>
+        <p class="page-subtitle">Manage your equipment listings and rental requests</p>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-icon green">🚜</div>
+          <div>
+            <div class="stat-value" id="stat-listings">0</div>
+            <div class="stat-label">Equipment Listed</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon gold">📬</div>
+          <div>
+            <div class="stat-value" id="stat-requests">0</div>
+            <div class="stat-label">Total Rentals</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon blue">💰</div>
+          <div>
+            <div class="stat-value" id="stat-revenue">₦0</div>
+            <div class="stat-label">Total Revenue</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon rust">⏳</div>
+          <div>
+            <div class="stat-value" id="stat-pending">0</div>
+            <div class="stat-label">Active Rentals</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+            <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--earth-dark)">Recent Rental Requests</h3>
+            <a href="#" onclick="showSection('requests',event.target)" style="color:var(--earth);font-size:0.85rem;font-weight:600">View All →</a>
+          </div>
+          <div id="recent-requests">Loading...</div>
+        </div>
+        <div>
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--earth-dark);margin-bottom:1rem">Quick Actions</h3>
+          <div style="display:flex;flex-direction:column;gap:0.75rem">
+            <button class="btn btn-primary" onclick="openAddModal()" style="justify-content:flex-start;padding:1rem 1.25rem">
+              <span style="font-size:1.2rem">➕</span>
+              <div style="text-align:left">
+                <div>Add New Equipment</div>
+                <div style="font-size:0.78rem;opacity:0.8;font-weight:400">List a new machine for rent</div>
+              </div>
+            </button>
+            <button class="btn btn-outline" onclick="showSection('listings',event.target)" style="justify-content:flex-start;padding:1rem 1.25rem">
+              <span style="font-size:1.2rem">🚜</span>
+              <div style="text-align:left">
+                <div>Manage Equipment</div>
+                <div style="font-size:0.78rem;color:var(--text-muted);font-weight:400">Edit or remove listings</div>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LISTINGS -->
+    <section id="section-listings" style="display:none">
+      <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <h1 class="page-title">My Equipment</h1>
+          <p class="page-subtitle">Manage your equipment listings</p>
+        </div>
+        <button class="btn btn-primary" onclick="openAddModal()">➕ Add Equipment</button>
+      </div>
+      <div id="listings-grid" class="grid grid-3">
+        <div style="text-align:center;padding:2rem;color:var(--text-muted)">Loading...</div>
+      </div>
+    </section>
+
+    <!-- RENTAL REQUESTS -->
+    <section id="section-requests" style="display:none">
+      <div class="page-header">
+        <h1 class="page-title">Rental Requests</h1>
+        <p class="page-subtitle">All farmer rental requests for your equipment</p>
+      </div>
+      <div class="tab-row">
+        <button class="tab-btn active" onclick="filterRequests('all', this)">All Requests</button>
+        <button class="tab-btn" onclick="filterRequests('confirmed', this)">Active</button>
+        <button class="tab-btn" onclick="filterRequests('completed', this)">Completed</button>
+      </div>
+      <div class="table-container">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Equipment</th>
+              <th>Farmer</th>
+              <th>Period</th>
+              <th>Qty</th>
+              <th>Delivery</th>
+              <th>Amount</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="requests-tbody">
+            <tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted)">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PROFILE -->
+    <section id="section-profile" style="display:none">
+      <div class="page-header">
+        <h1 class="page-title">Business Profile</h1>
+      </div>
+      <div class="card" style="max-width:500px">
+        <div class="card-body" id="profile-info">Loading...</div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ADD EQUIPMENT MODAL -->
+<div class="modal-overlay" id="add-modal">
+  <div class="modal" style="max-width:580px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+      <h2 class="modal-title" style="margin-bottom:0" id="add-modal-title">Add New Equipment</h2>
+      <button data-close-modal="add-modal" style="background:none;border:none;font-size:1.5rem;cursor:pointer">✕</button>
+    </div>
+    <form id="add-equipment-form" onsubmit="handleAddEquipment(event)">
+      <div class="grid grid-2">
+        <div class="form-group" style="grid-column:1/-1">
+          <label class="form-label">Equipment Name *</label>
+          <input type="text" class="form-control" name="name" required placeholder="e.g. Tractor (75HP)">
+        </div>
+        <div class="form-group" style="grid-column:1/-1">
+          <label class="form-label">Description *</label>
+          <textarea class="form-control" name="description" rows="3" required placeholder="Describe the equipment, its features and use cases..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Price per Day (₦) *</label>
+          <input type="number" class="form-control" name="price_per_day" required min="100" placeholder="15000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Quantity Available *</label>
+          <input type="number" class="form-control" name="quantity_available" required min="1" placeholder="3">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Category *</label>
+          <select class="form-control form-select" name="category">
+            <option value="tractors">🚜 Tractors</option>
+            <option value="harvesters">🌾 Harvesters</option>
+            <option value="irrigation">💧 Irrigation</option>
+            <option value="planters">🌱 Planters</option>
+            <option value="processing">⚙️ Processing</option>
+            <option value="sprayers">🔧 Sprayers</option>
+            <option value="general">🛠️ General</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Delivery Available?</label>
+          <select class="form-control form-select" name="delivery_available">
+            <option value="0">No – Self Pickup Only</option>
+            <option value="1">Yes – We Deliver</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Equipment Image</label>
+        <div class="file-upload-area" onclick="document.getElementById('img-input').click()">
+          <input type="file" id="img-input" name="image" accept="image/*" onchange="previewImage(this)">
+          <div id="upload-preview">
+            <div style="font-size:2rem;margin-bottom:0.5rem">📸</div>
+            <div style="font-weight:600;color:var(--earth-dark)">Click to upload image</div>
+            <div style="font-size:0.8rem;color:var(--text-muted)">JPG, PNG up to 5MB</div>
+          </div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block btn-lg" id="add-btn">Add Equipment →</button>
+    </form>
+  </div>
+</div>
+
+<script src="/static/js/main.js"></script>
+<script>
+let user = null;
+let myListings = [];
+let myRequests = [];
+
+async function init() {
+  user = Auth.require('company');
+  if (!user) return;
+
+  document.getElementById('sidebar-name').textContent = user.name;
+  document.getElementById('overview-title').textContent = `Welcome, ${user.name}! 🏢`;
+  document.getElementById('nav-user').innerHTML = `
+    <span class="nav-user-name">🏢 ${user.name.split(' ')[0]}</span>
+    <button class="btn btn-outline btn-sm" onclick="logout()" style="color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.3)">Logout</button>
+  `;
+
+  await Promise.all([loadListings(), loadRequests()]);
+  loadProfile();
+}
+
+async function loadListings() {
+  myListings = await apiFetch(`/company/${user.id}/equipment`);
+  document.getElementById('stat-listings').textContent = myListings.length;
+  renderListings();
+}
+
+async function loadRequests() {
+  myRequests = await apiFetch(`/company/${user.id}/rentals`);
+  const revenue = myRequests.reduce((s, r) => s + r.total_price, 0);
+  const active = myRequests.filter(r => r.status === 'confirmed').length;
+  document.getElementById('stat-requests').textContent = myRequests.length;
+  document.getElementById('stat-revenue').textContent = formatNaira(revenue);
+  document.getElementById('stat-pending').textContent = active;
+  renderRecentRequests();
+  renderRequestsTable('all');
+}
+
+function renderListings() {
+  const grid = document.getElementById('listings-grid');
+  if (!myListings.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-icon">🚜</div><h3>No equipment listed</h3><p><button class="btn btn-primary" onclick="openAddModal()">Add Your First Equipment</button></p></div>`;
+    return;
+  }
+  grid.innerHTML = myListings.map(eq => `
+    <div class="card equipment-card">
+      ${eq.image_url ? `<img src="${eq.image_url}" class="equipment-card-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : ''}
+      <div class="equipment-card-img-placeholder" style="${eq.image_url ? 'display:none' : ''}">${categoryEmoji(eq.category)}</div>
+      <div class="card-body" style="display:flex;flex-direction:column;flex:1">
+        <div class="equipment-meta">
+          <span class="badge badge-green">${eq.category}</span>
+          ${eq.delivery_available ? '<span class="badge badge-blue">🚚 Delivery</span>' : ''}
+        </div>
+        <div class="equipment-name">${eq.name}</div>
+        <div class="equipment-desc">${eq.description}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:auto">
+          <div>
+            <div class="equipment-price">${formatNaira(eq.price_per_day)}<small>/day</small></div>
+            <div style="font-size:0.78rem;color:var(--text-muted)">Qty: ${eq.quantity_available}</div>
+          </div>
+          <button class="btn btn-danger btn-sm" onclick="deleteEquipment('${eq.id}', '${eq.name}')">Delete</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderRecentRequests() {
+  const container = document.getElementById('recent-requests');
+  const recent = myRequests.slice(0, 4);
+  if (!recent.length) {
+    container.innerHTML = `<div class="empty-state" style="padding:2rem"><div class="empty-state-icon">📬</div><p>No rental requests yet</p></div>`;
+    return;
+  }
+  container.innerHTML = recent.map(r => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 0;border-bottom:1px solid var(--cream-dark);font-size:0.88rem">
+      <div>
+        <div style="font-weight:600">${r.equipment_name}</div>
+        <div style="color:var(--text-muted);font-size:0.8rem">👤 ${r.farmer_name} • ${formatDate(r.start_date)}</div>
+      </div>
+      <div style="text-align:right">
+        ${statusBadge(r.status)}
+        <div style="font-weight:700;color:var(--earth);font-size:0.9rem;margin-top:0.2rem">${formatNaira(r.total_price)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterRequests(filter, btn) {
+  document.querySelectorAll('#section-requests .tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderRequestsTable(filter);
+}
+
+function renderRequestsTable(filter) {
+  const filtered = filter === 'all' ? myRequests : myRequests.filter(r => r.status === filter);
+  const tbody = document.getElementById('requests-tbody');
+  if (!filtered.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted)">No requests found</td></tr>';
+    return;
+  }
+  tbody.innerHTML = filtered.map(r => `
+    <tr>
+      <td><strong>${r.equipment_name}</strong></td>
+      <td>
+        <div>${r.farmer_name}</div>
+        <div style="font-size:0.78rem;color:var(--text-muted)">${r.farmer_phone}</div>
+        <div style="font-size:0.78rem;color:var(--text-muted)">📍 ${r.farm_location}</div>
+      </td>
+      <td style="white-space:nowrap">
+        ${formatDate(r.start_date)}<br>
+        <span style="font-size:0.78rem;color:var(--text-muted)">to ${formatDate(r.end_date)} (${r.total_days}d)</span>
+      </td>
+      <td>${r.quantity}</td>
+      <td>${r.delivery_option === 'delivery' ? '🚚 Delivery' : '📦 Pickup'}</td>
+      <td style="font-weight:700;color:var(--earth)">${formatNaira(r.total_price)}</td>
+      <td>${statusBadge(r.status)}</td>
+    </tr>
+  `).join('');
+}
+
+function loadProfile() {
+  document.getElementById('profile-info').innerHTML = `
+    <div style="text-align:center;margin-bottom:1.5rem">
+      <div style="width:80px;height:80px;background:var(--earth);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 1rem;color:white">🏢</div>
+      <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--earth-dark)">${user.name}</div>
+      <div style="color:var(--text-muted);font-size:0.85rem">Verified Rental Company</div>
+      <span class="badge badge-green" style="margin-top:0.5rem">✅ Verified</span>
+    </div>
+    <div class="divider"></div>
+    <div style="font-size:0.88rem;color:var(--text-muted);background:var(--cream-dark);border-radius:8px;padding:1rem">
+      To update business details, please contact FarmRent support.
+    </div>
+  `;
+}
+
+function openAddModal() {
+  document.getElementById('add-equipment-form').reset();
+  document.getElementById('upload-preview').innerHTML = `
+    <div style="font-size:2rem;margin-bottom:0.5rem">📸</div>
+    <div style="font-weight:600;color:var(--earth-dark)">Click to upload image</div>
+    <div style="font-size:0.8rem;color:var(--text-muted)">JPG, PNG up to 5MB</div>
+  `;
+  Modal.open('add-modal');
+}
+
+function previewImage(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      document.getElementById('upload-preview').innerHTML = `
+        <img src="${e.target.result}" style="max-height:120px;border-radius:8px;margin-bottom:0.5rem">
+        <div style="font-size:0.8rem;color:var(--text-muted)">${input.files[0].name}</div>
+      `;
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+async function handleAddEquipment(e) {
+  e.preventDefault();
+  const btn = document.getElementById('add-btn');
+  btn.textContent = 'Adding...'; btn.disabled = true;
+
+  const form = e.target;
+  const formData = new FormData(form);
+  formData.append('company_id', user.id);
+
+  try {
+    const res = await fetch(`${API}/equipment`, { method: 'POST', body: formData });
+    if (!res.ok) throw new Error('Failed to add equipment');
+    Toast.show('Equipment added successfully! 🚜', 'success');
+    Modal.close('add-modal');
+    await loadListings();
+  } catch(err) {
+    Toast.show('Failed to add equipment', 'error');
+  } finally {
+    btn.textContent = 'Add Equipment →'; btn.disabled = false;
+  }
+}
+
+async function deleteEquipment(id, name) {
+  if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
+  await apiFetch(`/equipment/${id}`, { method: 'DELETE' });
+  Toast.show('Equipment removed', 'info');
+  await loadListings();
+}
+
+function showSection(name, el) {
+  document.querySelectorAll('main section').forEach(s => s.style.display = 'none');
+  document.getElementById(`section-${name}`).style.display = 'block';
+  document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+  const link = el?.closest('a');
+  if (link) link.classList.add('active');
+}
+
+init();
+</script>
+</body>
+</html>

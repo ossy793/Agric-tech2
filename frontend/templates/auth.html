@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FarmRent – Sign Up / Login</title>
+  <link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body>
+<div class="auth-page">
+  <!-- Hero Side -->
+  <div class="auth-hero">
+    <div style="position:relative;z-index:1">
+      <a href="/" class="nav-logo" style="margin-bottom:3rem;display:inline-flex">🌾 FarmRent</a>
+      <h1 style="font-family:'Playfair Display',serif;font-size:2.5rem;color:white;font-weight:900;line-height:1.1;margin-bottom:1.5rem">
+        Modern Equipment<br>for Every Nigerian Farmer
+      </h1>
+      <p style="color:rgba(255,255,255,0.7);font-size:1rem;margin-bottom:2.5rem">
+        Join thousands of small-scale farmers already renting modern machinery at affordable daily rates.
+      </p>
+      <div style="display:flex;flex-direction:column;gap:1rem">
+        <div style="display:flex;align-items:center;gap:0.75rem">
+          <div style="width:36px;height:36px;background:rgba(232,168,62,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem">🚜</div>
+          <span style="color:rgba(255,255,255,0.8);font-size:0.9rem">Access tractors, harvesters & more</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.75rem">
+          <div style="width:36px;height:36px;background:rgba(232,168,62,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem">💰</div>
+          <span style="color:rgba(255,255,255,0.8);font-size:0.9rem">Pay only for days you use the equipment</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.75rem">
+          <div style="width:36px;height:36px;background:rgba(232,168,62,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem">🚚</div>
+          <span style="color:rgba(255,255,255,0.8);font-size:0.9rem">Delivery available to your farm</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Side -->
+  <div class="auth-form-side">
+    <div class="auth-form-box">
+      <!-- Role Toggle -->
+      <div style="margin-bottom:1.5rem">
+        <div class="tab-row">
+          <button class="tab-btn active" onclick="setRole('farmer', this)">🌱 Farmer</button>
+          <button class="tab-btn" onclick="setRole('company', this)">🏢 Rental Company</button>
+        </div>
+        <div class="tab-row" style="margin-bottom:0">
+          <button class="tab-btn active" onclick="setMode('login', this)" id="mode-login">Login</button>
+          <button class="tab-btn" onclick="setMode('signup', this)" id="mode-signup">Sign Up</button>
+        </div>
+      </div>
+
+      <h2 style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--earth-dark);margin-bottom:0.5rem" id="form-title">Farmer Login</h2>
+      <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1.5rem" id="form-subtitle">Welcome back! Access your farm dashboard.</p>
+
+      <!-- LOGIN FORM -->
+      <form id="login-form" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-control" id="login-email" required placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-control" id="login-password" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block btn-lg" id="login-btn">Login →</button>
+        <p style="text-align:center;margin-top:1rem;font-size:0.85rem;color:var(--text-muted)">
+          Don't have an account? <a href="#" onclick="setModeExternal('signup')" style="color:var(--earth);font-weight:600">Sign up free</a>
+        </p>
+        <div style="margin-top:1rem;padding:0.75rem;background:var(--cream-dark);border-radius:8px;font-size:0.8rem;color:var(--text-muted)">
+          <strong>Demo accounts:</strong><br>
+          Farmer: any new signup | Company: agromech@demo.com / demo123
+        </div>
+      </form>
+
+      <!-- FARMER SIGNUP FORM -->
+      <form id="farmer-signup-form" onsubmit="handleFarmerSignup(event)" style="display:none">
+        <div class="grid grid-2">
+          <div class="form-group">
+            <label class="form-label">Full Name *</label>
+            <input type="text" class="form-control" name="name" required placeholder="Emeka Okafor">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number *</label>
+            <input type="tel" class="form-control" name="phone" required placeholder="08012345678">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address *</label>
+          <input type="email" class="form-control" name="email" required placeholder="emeka@example.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Home Address *</label>
+          <input type="text" class="form-control" name="address" required placeholder="12 Farm Road, Ibadan">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Farm Location *</label>
+          <input type="text" class="form-control" name="farm_location" required placeholder="Oyo State, Nigeria">
+        </div>
+        <div class="form-group">
+          <label class="form-label">NIN (National Identification Number) *</label>
+          <input type="text" class="form-control" name="nin" required placeholder="12345678901" maxlength="11">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password *</label>
+          <input type="password" class="form-control" name="password" required placeholder="Min. 6 characters" minlength="6">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block btn-lg">Create Farmer Account →</button>
+        <p style="text-align:center;margin-top:1rem;font-size:0.85rem;color:var(--text-muted)">
+          Already registered? <a href="#" onclick="setModeExternal('login')" style="color:var(--earth);font-weight:600">Login here</a>
+        </p>
+      </form>
+
+      <!-- COMPANY SIGNUP FORM -->
+      <form id="company-signup-form" onsubmit="handleCompanySignup(event)" style="display:none">
+        <div class="form-group">
+          <label class="form-label">Business Name *</label>
+          <input type="text" class="form-control" name="business_name" required placeholder="AgroMech Nigeria Ltd">
+        </div>
+        <div class="grid grid-2">
+          <div class="form-group">
+            <label class="form-label">Phone Number *</label>
+            <input type="tel" class="form-control" name="phone" required placeholder="08012345678">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tax Number *</label>
+            <input type="text" class="form-control" name="tax_number" required placeholder="TAX123456">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Business Email *</label>
+          <input type="email" class="form-control" name="email" required placeholder="info@agromech.ng">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Business Location *</label>
+          <input type="text" class="form-control" name="business_location" required placeholder="Lagos, Nigeria">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password *</label>
+          <input type="password" class="form-control" name="password" required placeholder="Min. 6 characters" minlength="6">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block btn-lg">Create Company Account →</button>
+        <p style="text-align:center;margin-top:1rem;font-size:0.85rem;color:var(--text-muted)">
+          Already registered? <a href="#" onclick="setModeExternal('login')" style="color:var(--earth);font-weight:600">Login here</a>
+        </p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="/static/js/main.js"></script>
+<script>
+let currentRole = 'farmer';
+let currentMode = 'login';
+
+// Check URL params
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('role') === 'company') {
+  setTimeout(() => setRole('company', document.querySelectorAll('.tab-btn')[1]), 0);
+}
+if (urlParams.get('mode') === 'signup') {
+  setTimeout(() => setMode('signup', document.getElementById('mode-signup')), 0);
+}
+
+// Redirect if already logged in
+const user = Auth.get();
+if (user) window.location.href = user.role === 'farmer' ? '/farmer-dashboard' : '/company-dashboard';
+
+function setRole(role, btn) {
+  currentRole = role;
+  document.querySelectorAll('.tab-row:first-child .tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateFormDisplay();
+}
+
+function setMode(mode, btn) {
+  currentMode = mode;
+  document.querySelectorAll('.tab-row:nth-child(2) .tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateFormDisplay();
+}
+
+function setModeExternal(mode) {
+  currentMode = mode;
+  const btn = mode === 'login' ? document.getElementById('mode-login') : document.getElementById('mode-signup');
+  document.querySelectorAll('.tab-row:nth-child(2) .tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateFormDisplay();
+}
+
+function updateFormDisplay() {
+  const titles = {
+    farmer_login: ['Farmer Login', 'Welcome back! Access your farm dashboard.'],
+    farmer_signup: ['Create Farmer Account', 'Join FarmRent and access modern farm equipment today.'],
+    company_login: ['Company Login', 'Manage your equipment listings and rentals.'],
+    company_signup: ['List Your Equipment', 'Start earning by renting out your farm machinery.'],
+  };
+  const key = `${currentRole}_${currentMode}`;
+  document.getElementById('form-title').textContent = titles[key][0];
+  document.getElementById('form-subtitle').textContent = titles[key][1];
+
+  document.getElementById('login-form').style.display = currentMode === 'login' ? 'block' : 'none';
+  document.getElementById('farmer-signup-form').style.display = (currentMode === 'signup' && currentRole === 'farmer') ? 'block' : 'none';
+  document.getElementById('company-signup-form').style.display = (currentMode === 'signup' && currentRole === 'company') ? 'block' : 'none';
+}
+
+async function handleLogin(e) {
+  e.preventDefault();
+  const btn = document.getElementById('login-btn');
+  btn.textContent = 'Logging in...'; btn.disabled = true;
+  try {
+    const data = await apiFetch(`/auth/${currentRole}/login`, {
+      method: 'POST',
+      body: { email: document.getElementById('login-email').value, password: document.getElementById('login-password').value }
+    });
+    Auth.set(data);
+    Toast.show('Welcome back, ' + data.name.split(' ')[0] + '!', 'success');
+    setTimeout(() => window.location.href = data.role === 'farmer' ? '/farmer-dashboard' : '/company-dashboard', 800);
+  } catch(err) {
+    btn.textContent = 'Login →'; btn.disabled = false;
+  }
+}
+
+async function handleFarmerSignup(e) {
+  e.preventDefault();
+  const form = e.target;
+  const data = Object.fromEntries(new FormData(form));
+  try {
+    const res = await apiFetch('/auth/farmer/signup', { method: 'POST', body: data });
+    Auth.set(res);
+    Toast.show('Account created! Welcome to FarmRent 🌾', 'success');
+    setTimeout(() => window.location.href = '/farmer-dashboard', 800);
+  } catch(err) {}
+}
+
+async function handleCompanySignup(e) {
+  e.preventDefault();
+  const form = e.target;
+  const data = Object.fromEntries(new FormData(form));
+  try {
+    const res = await apiFetch('/auth/company/signup', { method: 'POST', body: data });
+    Auth.set(res);
+    Toast.show('Company account created! 🏢', 'success');
+    setTimeout(() => window.location.href = '/company-dashboard', 800);
+  } catch(err) {}
+}
+</script>
+</body>
+</html>

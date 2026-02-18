@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FarmRent Nigeria – Rent Modern Farm Equipment</title>
+  <link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo"><span>🌾</span> FarmRent</a>
+  <ul class="nav-links">
+    <li><a href="/marketplace">Equipment</a></li>
+    <li><a href="/auth">For Companies</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+  </ul>
+  <div class="nav-user" id="nav-user"></div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">🇳🇬 Made for Nigerian Farmers</div>
+    <h1>Modern Farm Equipment,<br><em>Rented Not Bought</em></h1>
+    <p>Access tractors, harvesters, irrigation systems, and more at a fraction of the purchase cost. Empower your farm, increase your yield.</p>
+    <div class="hero-cta">
+      <a href="/auth?role=farmer" class="btn btn-primary btn-lg">🌱 Start Farming Better</a>
+      <a href="/marketplace" class="btn btn-outline btn-lg" style="color:white;border-color:rgba(255,255,255,0.4)">Browse Equipment</a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div style="background:var(--gold);padding:2rem;text-align:center;">
+  <div style="max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;">
+    <div>
+      <div style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:900;color:var(--earth-dark)">80%</div>
+      <div style="font-size:0.9rem;color:var(--earth-dark);opacity:0.8">of Nigeria's food from small-scale farmers</div>
+    </div>
+    <div>
+      <div style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:900;color:var(--earth-dark)">10x</div>
+      <div style="font-size:0.9rem;color:var(--earth-dark);opacity:0.8">cheaper than buying equipment outright</div>
+    </div>
+    <div>
+      <div style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:900;color:var(--earth-dark)">24hr</div>
+      <div style="font-size:0.9rem;color:var(--earth-dark);opacity:0.8">equipment delivery to your farm</div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features-section" id="how-it-works">
+  <h2 class="section-title">How FarmRent Works</h2>
+  <p class="section-sub">Simple, fast, and designed for Nigerian farmers</p>
+  <div class="grid grid-3" style="margin-bottom:4rem">
+    <div class="feature-card">
+      <span class="feature-icon">📝</span>
+      <h3>1. Sign Up Free</h3>
+      <p>Create your farmer account with your NIN and farm details. Takes less than 2 minutes.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🔍</span>
+      <h3>2. Browse & Select</h3>
+      <p>Browse available equipment in your area. Filter by type, price, and availability.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🚜</span>
+      <h3>3. Rent & Grow</h3>
+      <p>Choose your rental period, pay securely, and get equipment delivered to your farm.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Available Equipment</h2>
+  <p class="section-sub">From tractors to irrigation systems – rent what you need, when you need it</p>
+  <div class="grid grid-4" id="featured-equipment">
+    <div class="card" style="padding:2rem;text-align:center;color:var(--text-muted)">Loading...</div>
+  </div>
+  <div style="text-align:center;margin-top:2rem">
+    <a href="/marketplace" class="btn btn-primary btn-lg">View All Equipment →</a>
+  </div>
+</section>
+
+<!-- WHY FARMRENT -->
+<section style="background:var(--cream-dark);padding:5rem 2rem;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <h2 class="section-title">Why Choose FarmRent?</h2>
+    <p class="section-sub">Solving real problems for Nigeria's farming community</p>
+    <div class="grid grid-3">
+      <div class="feature-card">
+        <span class="feature-icon">💰</span>
+        <h3>Affordable Access</h3>
+        <p>Rent equipment for as low as ₦2,000/day instead of paying millions to purchase outright.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">✅</span>
+        <h3>Verified Providers</h3>
+        <p>All rental companies are verified with tax numbers. Equipment is inspected and well-maintained.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🚚</span>
+        <h3>Delivery Options</h3>
+        <p>Many providers offer delivery directly to your farm location, saving time and transport cost.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📅</span>
+        <h3>Flexible Periods</h3>
+        <p>Rent for as short as 1 day or as long as you need the planting or harvest season.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🔒</span>
+        <h3>Secure Payments</h3>
+        <p>All payments processed securely. Get instant confirmation and payment receipts.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📱</span>
+        <h3>Easy to Use</h3>
+        <p>Designed for farmers. Simple interface that works on any device, anywhere in Nigeria.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>Ready to Transform Your Farm?</h2>
+  <p>Join thousands of Nigerian farmers already using modern equipment through FarmRent</p>
+  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+    <a href="/auth?role=farmer" class="btn btn-primary btn-lg">Sign Up as Farmer</a>
+    <a href="/auth?role=company" class="btn btn-lg" style="background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.3)">List Your Equipment</a>
+  </div>
+</section>
+
+<footer class="footer">
+  <p>🌾 FarmRent Nigeria – Empowering Small-Scale Farmers with Modern Technology</p>
+  <p style="margin-top:0.5rem;font-size:0.78rem">Hackathon Demo | Built to solve agricultural underproduction in Nigeria</p>
+</footer>
+
+<script src="/static/js/main.js"></script>
+<script>
+async function loadFeatured() {
+  try {
+    const equipment = await apiFetch('/equipment');
+    const container = document.getElementById('featured-equipment');
+    const featured = equipment.slice(0, 4);
+    if (!featured.length) { container.innerHTML = '<p style="text-align:center;color:var(--text-muted)">No equipment available</p>'; return; }
+    container.innerHTML = featured.map(eq => `
+      <div class="card equipment-card">
+        ${eq.image_url ? `<img src="${eq.image_url}" class="equipment-card-img" onerror="this.parentElement.querySelector('.equipment-card-img-placeholder').style.display='flex';this.style.display='none'">` : ''}
+        <div class="equipment-card-img-placeholder" style="${eq.image_url ? 'display:none' : ''}">${categoryEmoji(eq.category)}</div>
+        <div class="card-body">
+          <div class="equipment-meta">
+            <span class="badge badge-green">${eq.category}</span>
+            ${eq.delivery_available ? '<span class="badge badge-blue">🚚 Delivery</span>' : ''}
+          </div>
+          <div class="equipment-name">${eq.name}</div>
+          <div class="equipment-desc">${eq.description}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:auto">
+            <div class="equipment-price">${formatNaira(eq.price_per_day)}<small>/day</small></div>
+            <a href="/marketplace" class="btn btn-primary btn-sm">Rent Now</a>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) {}
+}
+loadFeatured();
+</script>
+</body>
+</html>

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FarmRent – Equipment Marketplace</title>
+  <link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo"><span>🌾</span> FarmRent</a>
+  <ul class="nav-links">
+    <li><a href="/marketplace" class="active" style="color:var(--gold)">Marketplace</a></li>
+  </ul>
+  <div style="display:flex;align-items:center;gap:1rem">
+    <button class="cart-btn" onclick="Modal.open('cart-modal')">
+      🛒 Cart <span class="cart-count">0</span>
+    </button>
+    <div class="nav-user" id="nav-user"></div>
+  </div>
+</nav>
+
+<div style="display:flex;min-height:calc(100vh - 64px)">
+  <!-- Sidebar Filters -->
+  <div style="width:220px;background:white;padding:1.5rem;border-right:1px solid var(--cream-dark);flex-shrink:0">
+    <h3 style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--earth-dark);margin-bottom:1rem">Filters</h3>
+    <div style="margin-bottom:1.5rem">
+      <div style="font-size:0.8rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem">Category</div>
+      <div id="category-filters">
+        <label style="display:flex;align-items:center;gap:0.5rem;padding:0.35rem 0;cursor:pointer;font-size:0.88rem">
+          <input type="radio" name="category" value="" checked onchange="filterEquipment()"> All Equipment
+        </label>
+        <label style="display:flex;align-items:center;gap:0.5rem;padding:0.35rem 0;cursor:pointer;font-size:0.88rem">
+          <input type="radio" name="category" value="tractors" onchange="filterEquipment()"> 🚜 Tractors
+        </label>
+        <label style="display:flex;align-items:center;gap:0.5rem;padding:0.35rem 0;cursor:pointer;font-size:0.88rem">
+          <input type="radio" name="category" value="harvesters" onchange="filterEquipment()"> 🌾 Harvesters
+        </label>
+        <label style="display:flex;align-items:center;gap:0.5rem;padding:0.35rem 0;cursor:pointer;font-size:0.88rem">
+          <input type="radio" name="category" value="irrigation" onchange="filterEquipment()"> 💧 Irrigation
+        </label>
+        <label style="display:flex;align-items:center;gap:0.5rem;padding:0.35rem 0;cursor:pointer;font-size:0.88rem">
+          <input type="radio" name="category" value="planters" onchange="filterEquipment()"> 🌱 Planters
+        </label>
+        <label style="display:flex;align-items:center;gap:0.5rem;padding:0.35rem 0;cursor:pointer;font-size:0.88rem">
+          <input type="radio" name="category" value="processing" onchange="filterEquipment()"> ⚙️ Processing
+        </label>
+        <label style="display:flex;align-items:center;gap:0.5rem;padding:0.35rem 0;cursor:pointer;font-size:0.88rem">
+          <input type="radio" name="category" value="sprayers" onchange="filterEquipment()"> 🔧 Sprayers
+        </label>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:0.8rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem">Delivery</div>
+      <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.88rem">
+        <input type="checkbox" id="delivery-filter" onchange="filterEquipment()"> With Delivery Only
+      </label>
+    </div>
+    <div style="margin-top:1.5rem">
+      <div style="font-size:0.8rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem">Sort By</div>
+      <select class="form-control form-select" style="font-size:0.85rem" onchange="filterEquipment()">
+        <option value="default">Default</option>
+        <option value="price-low">Price: Low to High</option>
+        <option value="price-high">Price: High to Low</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div style="flex:1;padding:2rem;overflow-y:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+      <div>
+        <h1 style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--earth-dark)">Equipment Marketplace</h1>
+        <p style="color:var(--text-muted);font-size:0.9rem" id="results-count">Loading equipment...</p>
+      </div>
+      <input type="text" class="search-input" placeholder="Search equipment..." style="width:280px" oninput="filterEquipment()" id="search-input">
+    </div>
+
+    <div class="grid grid-3" id="equipment-grid">
+      <!-- Loading skeleton -->
+      <div class="card" style="height:350px;background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.5s infinite"></div>
+      <div class="card" style="height:350px;background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.5s infinite"></div>
+      <div class="card" style="height:350px;background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.5s infinite"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CART MODAL -->
+<div class="modal-overlay" id="cart-modal">
+  <div class="modal" style="max-width:600px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+      <h2 class="modal-title" style="margin-bottom:0">🛒 Your Cart</h2>
+      <button data-close-modal="cart-modal" style="background:none;border:none;font-size:1.5rem;cursor:pointer">✕</button>
+    </div>
+    <div id="cart-items"></div>
+    <div id="cart-footer" style="display:none">
+      <div class="divider"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <span style="font-weight:700;font-size:1.1rem">Total:</span>
+        <span class="cart-total" style="font-size:1.3rem;font-weight:700;color:var(--earth)"></span>
+      </div>
+      <button class="btn btn-primary btn-block btn-lg" onclick="proceedToCheckout()">Proceed to Checkout →</button>
+    </div>
+  </div>
+</div>
+
+<!-- RENT MODAL -->
+<div class="modal-overlay" id="rent-modal">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+      <h2 class="modal-title" style="margin-bottom:0" id="rent-modal-title">Rent Equipment</h2>
+      <button data-close-modal="rent-modal" style="background:none;border:none;font-size:1.5rem;cursor:pointer">✕</button>
+    </div>
+    <div id="rent-modal-body"></div>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal-overlay" id="checkout-modal">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+      <h2 class="modal-title" style="margin-bottom:0">💳 Checkout</h2>
+      <button data-close-modal="checkout-modal" style="background:none;border:none;font-size:1.5rem;cursor:pointer">✕</button>
+    </div>
+    <div id="checkout-body"></div>
+  </div>
+</div>
+
+<!-- PAYMENT SUCCESS MODAL -->
+<div class="modal-overlay" id="payment-modal">
+  <div class="modal">
+    <div class="payment-success" id="payment-body"></div>
+  </div>
+</div>
+
+<style>
+@keyframes shimmer { to { background-position: -200% 0; } }
+</style>
+
+<script src="/static/js/main.js"></script>
+<script>
+let allEquipment = [];
+
+async function loadEquipment() {
+  allEquipment = await apiFetch('/equipment');
+  renderEquipment(allEquipment);
+}
+
+function renderEquipment(items) {
+  const grid = document.getElementById('equipment-grid');
+  document.getElementById('results-count').textContent = `${items.length} equipment available`;
+  if (!items.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-icon">🔍</div><h3>No equipment found</h3><p>Try adjusting your filters</p></div>`;
+    return;
+  }
+  grid.innerHTML = items.map(eq => `
+    <div class="card equipment-card">
+      ${eq.image_url ? `<img src="${eq.image_url}" class="equipment-card-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : ''}
+      <div class="equipment-card-img-placeholder" style="${eq.image_url ? 'display:none' : ''}">${categoryEmoji(eq.category)}</div>
+      <div class="card-body" style="display:flex;flex-direction:column;flex:1">
+        <div class="equipment-meta" style="margin-bottom:0.5rem">
+          <span class="badge badge-green">${eq.category}</span>
+          ${eq.delivery_available ? '<span class="badge badge-blue">🚚 Delivery</span>' : ''}
+          <span class="badge badge-gray">Qty: ${eq.quantity_available}</span>
+        </div>
+        <div class="equipment-name">${eq.name}</div>
+        <div class="equipment-desc">${eq.description}</div>
+        <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.75rem">📍 ${eq.business_location} • By ${eq.business_name}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:auto">
+          <div class="equipment-price">${formatNaira(eq.price_per_day)}<small>/day</small></div>
+          <button class="btn btn-primary btn-sm" onclick="openRentModal(${JSON.stringify(eq).replace(/"/g,'&quot;')})">Rent Now</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterEquipment() {
+  const search = document.getElementById('search-input').value.toLowerCase();
+  const category = document.querySelector('input[name="category"]:checked')?.value || '';
+  const deliveryOnly = document.getElementById('delivery-filter').checked;
+  const sort = document.querySelector('select').value;
+
+  let filtered = allEquipment.filter(eq => {
+    const matchSearch = !search || eq.name.toLowerCase().includes(search) || eq.description.toLowerCase().includes(search);
+    const matchCat = !category || eq.category === category;
+    const matchDelivery = !deliveryOnly || eq.delivery_available;
+    return matchSearch && matchCat && matchDelivery;
+  });
+
+  if (sort === 'price-low') filtered.sort((a,b) => a.price_per_day - b.price_per_day);
+  if (sort === 'price-high') filtered.sort((a,b) => b.price_per_day - a.price_per_day);
+
+  renderEquipment(filtered);
+}
+
+function openRentModal(eq) {
+  document.getElementById('rent-modal-title').textContent = `Rent: ${eq.name}`;
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('rent-modal-body').innerHTML = `
+    <div style="display:flex;gap:1rem;margin-bottom:1rem">
+      <div style="width:90px;height:90px;border-radius:10px;overflow:hidden;flex-shrink:0;background:var(--cream-dark);display:flex;align-items:center;justify-content:center;font-size:2.5rem">
+        ${eq.image_url ? `<img src="${eq.image_url}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='${categoryEmoji(eq.category)}'">` : categoryEmoji(eq.category)}
+      </div>
+      <div>
+        <div style="font-weight:700;color:var(--earth-dark)">${eq.name}</div>
+        <div style="font-size:0.85rem;color:var(--text-muted)">${eq.business_name} • ${eq.business_location}</div>
+        <div style="font-size:1.2rem;font-weight:700;color:var(--earth);margin-top:0.3rem">${formatNaira(eq.price_per_day)}/day</div>
+      </div>
+    </div>
+    <div class="grid grid-2">
+      <div class="form-group">
+        <label class="form-label">Start Date</label>
+        <input type="date" class="form-control" id="rent-start" min="${today}" value="${today}" onchange="calcTotal(${eq.price_per_day})">
+      </div>
+      <div class="form-group">
+        <label class="form-label">End Date</label>
+        <input type="date" class="form-control" id="rent-end" min="${today}" value="${today}" onchange="calcTotal(${eq.price_per_day})">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Quantity (Max: ${eq.quantity_available})</label>
+      <input type="number" class="form-control" id="rent-qty" value="1" min="1" max="${eq.quantity_available}" onchange="calcTotal(${eq.price_per_day})">
+    </div>
+    ${eq.delivery_available ? `
+    <div class="form-group">
+      <label class="form-label">Delivery Option</label>
+      <select class="form-control form-select" id="rent-delivery">
+        <option value="pickup">Self Pickup</option>
+        <option value="delivery">Request Delivery (+cost)</option>
+      </select>
+    </div>
+    <div class="form-group" id="delivery-addr-group" style="display:none">
+      <label class="form-label">Delivery Address</label>
+      <input type="text" class="form-control" id="rent-delivery-addr" placeholder="Your farm address">
+    </div>
+    ` : `<input type="hidden" id="rent-delivery" value="pickup">`}
+    <div style="background:var(--cream-dark);border-radius:var(--radius);padding:1rem;margin-bottom:1rem" id="rent-summary">
+      <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;font-size:0.88rem">
+        <span>Days</span><span id="rent-days">0</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;font-size:0.88rem">
+        <span>Price/day</span><span>${formatNaira(eq.price_per_day)}</span>
+      </div>
+      <div class="divider" style="margin:0.5rem 0"></div>
+      <div style="display:flex;justify-content:space-between;font-weight:700;font-size:1.1rem">
+        <span>Total</span><span id="rent-total" style="color:var(--earth)">₦0</span>
+      </div>
+    </div>
+    <button class="btn btn-primary btn-block btn-lg" onclick="addToCart('${eq.id}', '${eq.name}', ${eq.price_per_day}, '${eq.company_id}')">Add to Cart 🛒</button>
+  `;
+
+  if (eq.delivery_available) {
+    document.getElementById('rent-delivery').addEventListener('change', function() {
+      document.getElementById('delivery-addr-group').style.display = this.value === 'delivery' ? 'block' : 'none';
+    });
+  }
+  calcTotal(eq.price_per_day);
+  Modal.open('rent-modal');
+}
+
+function calcTotal(pricePerDay) {
+  const start = new Date(document.getElementById('rent-start').value);
+  const end = new Date(document.getElementById('rent-end').value);
+  const qty = parseInt(document.getElementById('rent-qty').value) || 1;
+  const days = Math.max(0, Math.ceil((end - start) / (1000*60*60*24)) + 1);
+  const total = days * pricePerDay * qty;
+  document.getElementById('rent-days').textContent = days;
+  document.getElementById('rent-total').textContent = formatNaira(total);
+}
+
+function addToCart(equipmentId, name, pricePerDay, companyId) {
+  const start = document.getElementById('rent-start').value;
+  const end = document.getElementById('rent-end').value;
+  const qty = parseInt(document.getElementById('rent-qty').value);
+  const deliveryEl = document.getElementById('rent-delivery');
+  const deliveryOption = deliveryEl?.value || 'pickup';
+  const deliveryAddr = document.getElementById('rent-delivery-addr')?.value || '';
+
+  if (!start || !end || new Date(end) < new Date(start)) {
+    Toast.show('Please select valid dates', 'error'); return;
+  }
+
+  const days = Math.ceil((new Date(end) - new Date(start)) / (1000*60*60*24)) + 1;
+  const total = days * pricePerDay * qty;
+
+  Cart.add({ equipment_id: equipmentId, name, price_per_day: pricePerDay, company_id: companyId, quantity: qty, start_date: start, end_date: end, total_days: days, total_price: total, delivery_option: deliveryOption, delivery_address: deliveryAddr });
+  Modal.close('rent-modal');
+}
+
+function renderCart() {
+  const cart = Cart.get();
+  const items = document.getElementById('cart-items');
+  const footer = document.getElementById('cart-footer');
+
+  if (!cart.length) {
+    items.innerHTML = `<div class="empty-state" style="padding:2rem"><div class="empty-state-icon">🛒</div><p>Your cart is empty</p></div>`;
+    footer.style.display = 'none'; return;
+  }
+
+  items.innerHTML = cart.map((item, i) => `
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:0.75rem 0;border-bottom:1px solid var(--cream-dark)">
+      <div>
+        <div style="font-weight:600">${item.name}</div>
+        <div style="font-size:0.82rem;color:var(--text-muted)">${item.start_date} → ${item.end_date} (${item.total_days} days) × ${item.quantity}</div>
+        <div style="font-size:0.82rem;color:var(--text-muted)">${item.delivery_option === 'delivery' ? '🚚 With delivery' : '📦 Self pickup'}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-weight:700;color:var(--earth)">${formatNaira(item.total_price)}</div>
+        <button style="background:none;border:none;color:var(--rust);cursor:pointer;font-size:0.8rem;margin-top:0.25rem" onclick="Cart.remove('${item.equipment_id}');renderCart()">Remove</button>
+      </div>
+    </div>
+  `).join('');
+
+  footer.style.display = 'block';
+  Cart.updateBadge();
+}
+
+document.getElementById('cart-modal').addEventListener('click', () => {});
+document.querySelector('#cart-modal .modal').addEventListener('click', (e) => e.stopPropagation());
+
+// Re-render cart on open
+document.querySelector('[onclick*="cart-modal"]').addEventListener('click', renderCart);
+
+function proceedToCheckout() {
+  const user = Auth.get();
+  if (!user) { window.location.href = '/auth?role=farmer'; return; }
+  if (user.role !== 'farmer') { Toast.show('Only farmers can rent equipment', 'error'); return; }
+
+  const cart = Cart.get();
+  Modal.close('cart-modal');
+
+  document.getElementById('checkout-body').innerHTML = `
+    <div style="margin-bottom:1rem">
+      <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:0.75rem">Order Summary</h3>
+      ${cart.map(item => `
+        <div style="display:flex;justify-content:space-between;font-size:0.88rem;padding:0.4rem 0">
+          <span>${item.name} × ${item.quantity} (${item.total_days}d)</span>
+          <span>${formatNaira(item.total_price)}</span>
+        </div>
+      `).join('')}
+      <div class="divider"></div>
+      <div style="display:flex;justify-content:space-between;font-weight:700">
+        <span>Total</span><span style="color:var(--earth)">${formatNaira(Cart.total())}</span>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:0.75rem">Payment Method</h3>
+    <div style="border:1.5px solid var(--earth);border-radius:10px;padding:1rem;margin-bottom:1rem;background:#f0f5ee">
+      <div style="display:flex;align-items:center;gap:0.75rem">
+        <input type="radio" checked id="bank-pay"> <label for="bank-pay" style="font-weight:600;cursor:pointer">🏦 Bank Transfer (Demo)</label>
+      </div>
+      <div style="margin-top:0.5rem;font-size:0.82rem;color:var(--text-muted);margin-left:1.5rem">
+        Account: 0123456789 | Bank: GTBank | Name: FarmRent Nigeria
+      </div>
+    </div>
+    <div style="background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:0.75rem;font-size:0.82rem;margin-bottom:1rem">
+      ⚠️ <strong>Demo Mode:</strong> This is a mock payment. Click "Confirm Payment" to simulate a successful transaction.
+    </div>
+    <button class="btn btn-primary btn-block btn-lg" onclick="confirmPayment()">✅ Confirm Payment – ${formatNaira(Cart.total())}</button>
+  `;
+  Modal.open('checkout-modal');
+}
+
+async function confirmPayment() {
+  const user = Auth.get();
+  const cart = Cart.get();
+
+  try {
+    const results = [];
+    for (const item of cart) {
+      const res = await apiFetch('/rentals', {
+        method: 'POST',
+        body: {
+          farmer_id: user.id,
+          equipment_id: item.equipment_id,
+          company_id: item.company_id,
+          quantity: item.quantity,
+          start_date: item.start_date,
+          end_date: item.end_date,
+          total_days: item.total_days,
+          total_price: item.total_price,
+          delivery_option: item.delivery_option,
+          delivery_address: item.delivery_address || ''
+        }
+      });
+      results.push(res);
+    }
+
+    Cart.clear();
+    Modal.close('checkout-modal');
+
+    const firstRef = results[0]?.payment_ref || 'PAY-DEMO';
+    document.getElementById('payment-body').innerHTML = `
+      <div class="checkmark">✅</div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--earth-dark);margin-bottom:0.5rem">Payment Successful!</h2>
+      <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1rem">Your rental has been confirmed. The equipment provider has been notified.</p>
+      <div class="payment-ref">${firstRef}</div>
+      <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1.5rem">Keep this reference for your records</p>
+      <div style="background:#d1fae5;border-radius:8px;padding:0.75rem;text-align:left;font-size:0.85rem;margin-bottom:1.5rem">
+        <strong>What's next?</strong><br>
+        📧 Confirmation sent to your email<br>
+        🚜 Equipment provider will contact you<br>
+        📅 Equipment ready by your start date
+      </div>
+      <button class="btn btn-primary btn-lg" onclick="Modal.close('payment-modal');window.location.href='/farmer-dashboard'">View My Rentals →</button>
+    `;
+    Modal.open('payment-modal');
+  } catch(err) {}
+}
+
+loadEquipment();
+</script>
+</body>
+</html>

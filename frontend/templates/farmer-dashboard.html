@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FarmRent – Farmer Dashboard</title>
+  <link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo"><span>🌾</span> FarmRent</a>
+  <div style="display:flex;align-items:center;gap:1rem">
+    <a href="/marketplace" style="display:flex;align-items:center;gap:0.5rem" class="cart-btn">
+      🛒 Cart <span class="cart-count">0</span>
+    </a>
+    <div class="nav-user" id="nav-user"></div>
+  </div>
+</nav>
+
+<div class="dashboard">
+  <nav class="sidebar">
+    <div style="padding:1.5rem;border-bottom:1px solid rgba(255,255,255,0.1);margin-bottom:0.5rem">
+      <div style="color:white;font-weight:700;font-size:1rem" id="sidebar-name">Farmer Dashboard</div>
+      <div style="color:rgba(255,255,255,0.5);font-size:0.8rem;margin-top:0.2rem">Small-Scale Farmer</div>
+    </div>
+    <div class="sidebar-section">Navigation</div>
+    <a href="#" class="active" onclick="showSection('overview')"><span>🏠</span> Overview</a>
+    <a href="#" onclick="showSection('marketplace')"><span>🛒</span> Marketplace</a>
+    <a href="#" onclick="showSection('rentals')"><span>📋</span> My Rentals</a>
+    <div class="sidebar-section">Account</div>
+    <a href="#" onclick="showSection('profile')"><span>👤</span> My Profile</a>
+    <a href="#" onclick="logout()"><span>🚪</span> Logout</a>
+  </nav>
+
+  <main class="main-content">
+    <!-- OVERVIEW -->
+    <section id="section-overview">
+      <div class="page-header">
+        <h1 class="page-title">Welcome back! 👋</h1>
+        <p class="page-subtitle">Here's a summary of your farming activity</p>
+      </div>
+
+      <div class="stats-row" id="stats-row">
+        <div class="stat-card">
+          <div class="stat-icon green">🌾</div>
+          <div>
+            <div class="stat-value" id="stat-total">0</div>
+            <div class="stat-label">Total Rentals</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon gold">⏳</div>
+          <div>
+            <div class="stat-value" id="stat-active">0</div>
+            <div class="stat-label">Active Rentals</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon blue">💰</div>
+          <div>
+            <div class="stat-value" id="stat-spent">₦0</div>
+            <div class="stat-label">Total Spent</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon rust">🚜</div>
+          <div>
+            <div class="stat-value" id="stat-equipment">0</div>
+            <div class="stat-label">Equipment Types</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+        <!-- Recent Rentals -->
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+            <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--earth-dark)">Recent Rentals</h3>
+            <a href="#" onclick="showSection('rentals')" style="color:var(--earth);font-size:0.85rem;font-weight:600">View All →</a>
+          </div>
+          <div id="recent-rentals">
+            <div style="text-align:center;padding:2rem;color:var(--text-muted)">Loading...</div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div>
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--earth-dark);margin-bottom:1rem">Quick Actions</h3>
+          <div style="display:flex;flex-direction:column;gap:0.75rem">
+            <a href="/marketplace" class="btn btn-primary" style="justify-content:flex-start;padding:1rem 1.25rem">
+              <span style="font-size:1.2rem">🚜</span>
+              <div style="text-align:left">
+                <div style="font-size:0.95rem">Browse Equipment</div>
+                <div style="font-size:0.78rem;opacity:0.8;font-weight:400">Find and rent farm machinery</div>
+              </div>
+            </a>
+            <a href="#" onclick="showSection('rentals')" class="btn btn-outline" style="justify-content:flex-start;padding:1rem 1.25rem">
+              <span style="font-size:1.2rem">📋</span>
+              <div style="text-align:left">
+                <div style="font-size:0.95rem">View My Rentals</div>
+                <div style="font-size:0.78rem;color:var(--text-muted);font-weight:400">Track all your equipment rentals</div>
+              </div>
+            </a>
+            <div style="background:linear-gradient(135deg,var(--earth),var(--earth-light));border-radius:var(--radius);padding:1.25rem;color:white">
+              <div style="font-size:1.1rem;font-weight:700;margin-bottom:0.3rem">💡 Tip of the Day</div>
+              <div style="font-size:0.85rem;opacity:0.85">Renting a tractor during land preparation can increase your planting speed by up to 5x compared to manual labor.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MARKETPLACE REDIRECT -->
+    <section id="section-marketplace" style="display:none">
+      <div class="page-header">
+        <h1 class="page-title">Equipment Marketplace</h1>
+        <p class="page-subtitle">Browse and rent modern farm equipment</p>
+      </div>
+      <div style="text-align:center;padding:4rem 2rem">
+        <div style="font-size:4rem;margin-bottom:1rem">🛒</div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.5rem;margin-bottom:1rem;color:var(--earth-dark)">Visit the Marketplace</h3>
+        <p style="color:var(--text-muted);margin-bottom:2rem">Browse hundreds of farm equipment available for rent across Nigeria</p>
+        <a href="/marketplace" class="btn btn-primary btn-lg">Open Marketplace →</a>
+      </div>
+    </section>
+
+    <!-- MY RENTALS -->
+    <section id="section-rentals" style="display:none">
+      <div class="page-header">
+        <h1 class="page-title">My Rentals</h1>
+        <p class="page-subtitle">All your equipment rental history</p>
+      </div>
+
+      <div class="tab-row">
+        <button class="tab-btn active" onclick="filterRentals('all', this)">All</button>
+        <button class="tab-btn" onclick="filterRentals('confirmed', this)">Active</button>
+        <button class="tab-btn" onclick="filterRentals('completed', this)">Completed</button>
+      </div>
+
+      <div id="rentals-list">
+        <div style="text-align:center;padding:2rem;color:var(--text-muted)">Loading rentals...</div>
+      </div>
+    </section>
+
+    <!-- PROFILE -->
+    <section id="section-profile" style="display:none">
+      <div class="page-header">
+        <h1 class="page-title">My Profile</h1>
+        <p class="page-subtitle">Your account information</p>
+      </div>
+      <div class="card" style="max-width:500px">
+        <div class="card-body">
+          <div id="profile-info">
+            <div style="text-align:center;color:var(--text-muted)">Loading...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="/static/js/main.js"></script>
+<script>
+let user = null;
+let myRentals = [];
+
+async function init() {
+  user = Auth.require('farmer');
+  if (!user) return;
+
+  document.getElementById('sidebar-name').textContent = user.name;
+  document.getElementById('nav-user').innerHTML = `
+    <span class="nav-user-name">👋 ${user.name.split(' ')[0]}</span>
+    <button class="btn btn-outline btn-sm" onclick="logout()" style="color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.3)">Logout</button>
+  `;
+
+  await loadRentals();
+  loadProfile();
+}
+
+async function loadRentals() {
+  myRentals = await apiFetch(`/farmer/${user.id}/rentals`);
+
+  const total = myRentals.length;
+  const active = myRentals.filter(r => r.status === 'confirmed').length;
+  const spent = myRentals.reduce((s, r) => s + r.total_price, 0);
+  const types = new Set(myRentals.map(r => r.equipment_id)).size;
+
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-active').textContent = active;
+  document.getElementById('stat-spent').textContent = formatNaira(spent);
+  document.getElementById('stat-equipment').textContent = types;
+
+  renderRecentRentals();
+  renderRentalsList('all');
+}
+
+function renderRecentRentals() {
+  const container = document.getElementById('recent-rentals');
+  const recent = myRentals.slice(0, 3);
+  if (!recent.length) {
+    container.innerHTML = `<div class="empty-state" style="padding:2rem"><div class="empty-state-icon">📋</div><p>No rentals yet. <a href="/marketplace" style="color:var(--earth)">Browse equipment</a></p></div>`;
+    return;
+  }
+  container.innerHTML = recent.map(r => `
+    <div class="card" style="margin-bottom:0.75rem;box-shadow:none;border:1px solid var(--cream-dark)">
+      <div class="card-body" style="padding:1rem;display:flex;gap:1rem;align-items:center">
+        <div style="width:48px;height:48px;background:var(--cream-dark);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0">🚜</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:600;font-size:0.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.equipment_name}</div>
+          <div style="font-size:0.78rem;color:var(--text-muted)">${formatDate(r.start_date)} → ${formatDate(r.end_date)}</div>
+        </div>
+        <div style="text-align:right">
+          ${statusBadge(r.status)}
+          <div style="font-weight:700;font-size:0.9rem;color:var(--earth);margin-top:0.2rem">${formatNaira(r.total_price)}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterRentals(filter, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderRentalsList(filter);
+}
+
+function renderRentalsList(filter) {
+  const filtered = filter === 'all' ? myRentals : myRentals.filter(r => r.status === filter);
+  const container = document.getElementById('rentals-list');
+
+  if (!filtered.length) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📋</div><h3>No rentals found</h3><p><a href="/marketplace" style="color:var(--earth);font-weight:600">Browse equipment →</a></p></div>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map(r => `
+    <div class="card" style="margin-bottom:1rem">
+      <div class="card-body">
+        <div style="display:flex;gap:1rem;align-items:flex-start">
+          <div style="width:64px;height:64px;background:var(--cream-dark);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0">🚜</div>
+          <div style="flex:1">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem">
+              <div>
+                <div style="font-weight:700;font-size:1rem;color:var(--earth-dark)">${r.equipment_name}</div>
+                <div style="font-size:0.83rem;color:var(--text-muted)">By ${r.business_name} • ${r.company_phone}</div>
+              </div>
+              ${statusBadge(r.status)}
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0.5rem;margin-top:0.75rem;font-size:0.83rem">
+              <div><span style="color:var(--text-muted)">📅 Period:</span> ${formatDate(r.start_date)} – ${formatDate(r.end_date)}</div>
+              <div><span style="color:var(--text-muted)">📦 Qty:</span> ${r.quantity} unit(s)</div>
+              <div><span style="color:var(--text-muted)">🚚 Delivery:</span> ${r.delivery_option === 'delivery' ? 'Requested' : 'Self pickup'}</div>
+              <div><span style="color:var(--text-muted)">💳 Ref:</span> <span style="font-family:monospace;font-size:0.78rem">${r.payment_ref}</span></div>
+            </div>
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div style="font-size:1.2rem;font-weight:700;color:var(--earth)">${formatNaira(r.total_price)}</div>
+            <div style="font-size:0.78rem;color:var(--text-muted)">${r.total_days} day(s)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function loadProfile() {
+  document.getElementById('profile-info').innerHTML = `
+    <div style="text-align:center;margin-bottom:1.5rem">
+      <div style="width:80px;height:80px;background:var(--earth);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 1rem;color:white">👤</div>
+      <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--earth-dark)">${user.name}</div>
+      <div style="color:var(--text-muted);font-size:0.85rem">Small-Scale Farmer</div>
+    </div>
+    <div class="divider"></div>
+    <div style="display:flex;flex-direction:column;gap:0.75rem;font-size:0.9rem">
+      <div style="display:flex;gap:0.5rem"><span style="color:var(--text-muted);min-width:130px">Account ID:</span> <span style="font-family:monospace;font-size:0.8rem">${user.id.slice(0,16)}...</span></div>
+    </div>
+    <div class="divider"></div>
+    <div style="background:var(--cream-dark);border-radius:8px;padding:1rem;font-size:0.85rem;color:var(--text-muted)">
+      To update your profile details, please contact support.
+    </div>
+  `;
+}
+
+function showSection(name) {
+  document.querySelectorAll('main section').forEach(s => s.style.display = 'none');
+  document.getElementById(`section-${name}`).style.display = 'block';
+  document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+  event.target.closest('a').classList.add('active');
+}
+
+init();
+</script>
+</body>
+</html>
